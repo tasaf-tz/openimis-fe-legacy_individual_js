@@ -1,0 +1,24 @@
+{
+  "legacy_individual": {
+    "menu": {
+      "individuals": "PSSN II Individuals",
+      "groups": "PSSN II Households",
+      "imports": "Legacy Imports"
+    },
+    "page": {
+      "individuals.title": "PSSN II Individuals ",
+      "groups.title": "Legacy II Households",
+      "imports.title": "Legacy Imports (PSSN II)"
+    },
+    "banner": {
+      "default": "PSSN historical archive — these records are not live TASAF MIS beneficiaries."
+    },
+    "upload": {
+      "buttonLabel": "Upload PSSN paired CSV files",
+      "title": "Upload PSSN paired CSV files",
+      "household_file": "Household file",
+      "member_file": "Member file",
+      "code": "Batch code (optional)"
+    }
+  }
+}
