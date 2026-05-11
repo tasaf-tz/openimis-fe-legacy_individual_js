@@ -74,16 +74,6 @@ const DEFAULT_CONFIG = {
     },
   ],
 
-  'report.MainMenu': [
-    {
-      text: <FormattedMessage module={LEGACY_INDIVIDUAL_MODULE_NAME} id="menu.individuals" />,
-      icon: <Person />,
-      route: `/${ROUTE_LEGACY_INDIVIDUALS}`,
-      filter: (rights) => rights.includes(RIGHT_LEGACY_INDIVIDUAL_SEARCH),
-      id: 'report.reports',
-    },
-  ],
-
   refs: [
     { key: 'legacy_individual.route.individuals', ref: ROUTE_LEGACY_INDIVIDUALS },
     { key: 'legacy_individual.route.individual', ref: ROUTE_LEGACY_INDIVIDUAL },
