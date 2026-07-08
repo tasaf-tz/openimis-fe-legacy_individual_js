@@ -7,7 +7,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import LegacyArchiveBanner from '../components/LegacyArchiveBanner';
 import LegacyImportBatchesSearcher from '../components/LegacyImportBatchesSearcher';
-import LegacyPssnUploadDialog from '../components/dialogs/LegacyPssnUploadDialog';
+import LegacyImportDialog from '../components/dialogs/LegacyImportDialog';
 import { RIGHT_LEGACY_INDIVIDUAL_SEARCH, RIGHT_LEGACY_IMPORT_EXECUTE } from '../constants';
 
 const useStyles = makeStyles((theme) => ({ page: theme.page, fab: theme.fab }));
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({ page: theme.page, fab: theme.fab }));
 function LegacyImportBatchesPage() {
   const classes = useStyles();
   const rights = useSelector((store) => store.core.user.i_user.rights ?? []);
-  const [uploadOpen, setUploadOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   return (
     <div className={classes.page}>
@@ -24,18 +24,18 @@ function LegacyImportBatchesPage() {
       {rights.includes(RIGHT_LEGACY_INDIVIDUAL_SEARCH) && <LegacyImportBatchesSearcher />}
 
       {rights.includes(RIGHT_LEGACY_IMPORT_EXECUTE) && (
-        <Tooltip title="Upload PSSN paired CSV files">
+        <Tooltip title="Import legacy PSSN data (CSV upload or API)">
           <div className={classes.fab}>
-            <Fab color="primary" onClick={() => setUploadOpen(true)}>
+            <Fab color="primary" onClick={() => setImportOpen(true)}>
               <CloudUploadIcon />
             </Fab>
           </div>
         </Tooltip>
       )}
 
-      <LegacyPssnUploadDialog
-        open={uploadOpen}
-        onClose={() => setUploadOpen(false)}
+      <LegacyImportDialog
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
       />
     </div>
   );

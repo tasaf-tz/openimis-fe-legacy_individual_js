@@ -17,7 +17,7 @@ import LegacyGroupPage from './pages/LegacyGroupPage';
 import LegacyImportBatchesPage from './pages/LegacyImportBatchesPage';
 import LegacyImportBatchPage from './pages/LegacyImportBatchPage';
 
-import LegacyPssnUploadDialog from './components/dialogs/LegacyPssnUploadDialog';
+import LegacyImportDialog from './components/dialogs/LegacyImportDialog';
 
 import {
   LEGACY_INDIVIDUAL_MODULE_NAME,
@@ -81,10 +81,10 @@ const DEFAULT_CONFIG = {
     { key: 'legacy_individual.route.group', ref: ROUTE_LEGACY_GROUP },
     { key: 'legacy_individual.route.imports', ref: ROUTE_LEGACY_IMPORTS },
     { key: 'legacy_individual.route.import_batch', ref: ROUTE_LEGACY_IMPORT_BATCH },
-    { key: LEGACY_PSSN_UPLOAD_DIALOG_KEY, ref: LegacyPssnUploadDialog },
+    { key: LEGACY_PSSN_UPLOAD_DIALOG_KEY, ref: LegacyImportDialog },
   ],
 
-  [LEGACY_PSSN_UPLOAD_DIALOG_KEY]: LegacyPssnUploadDialog,
+  [LEGACY_PSSN_UPLOAD_DIALOG_KEY]: LegacyImportDialog,
 };
 
 export const LegacyIndividualModule = (cfg) => ({ ...DEFAULT_CONFIG, ...cfg });

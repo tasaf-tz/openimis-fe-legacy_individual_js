@@ -141,6 +141,39 @@ export function fetchLegacyImportBatch(uuid) {
   return graphql(payload, ACTION_TYPE.GET_LEGACY_IMPORT_BATCH);
 }
 
+export function pullLegacyPssnApi({
+  districtCode, regionCode, paaName, dryRun,
+}) {
+  return async (dispatch) => {
+    dispatch({ type: `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_REQ` });
+    try {
+      const url = `${baseApiUrl}/legacy_individual/import_pssn_api/`;
+      const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { ...apiHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          district_code: districtCode,
+          region_code: regionCode,
+          paa_name: paaName,
+          dry_run: !!dryRun,
+        }),
+      });
+
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok || json.success === false) {
+        dispatch({ type: `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_ERR`, payload: json.error || `HTTP ${response.status}` });
+        return { success: false, error: json.error };
+      }
+      dispatch({ type: `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_RESP`, payload: json.data || {} });
+      return { success: true, data: json.data };
+    } catch (e) {
+      dispatch({ type: `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_ERR`, payload: String(e) });
+      return { success: false, error: String(e) };
+    }
+  };
+}
+
 export function uploadLegacyPssnPair({ householdFile, memberFile, code }) {
   return async (dispatch) => {
     dispatch({ type: `${ACTION_TYPE.UPLOAD_LEGACY_PSSN}_REQ` });

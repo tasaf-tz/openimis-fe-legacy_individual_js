@@ -14,6 +14,7 @@ export const ACTION_TYPE = {
   SEARCH_LEGACY_IMPORT_BATCHES: 'LEGACY_INDIVIDUAL_SEARCH_IMPORT_BATCHES',
   GET_LEGACY_IMPORT_BATCH: 'LEGACY_INDIVIDUAL_GET_IMPORT_BATCH',
   UPLOAD_LEGACY_PSSN: 'LEGACY_INDIVIDUAL_UPLOAD_PSSN',
+  PULL_LEGACY_PSSN_API: 'LEGACY_INDIVIDUAL_PULL_PSSN_API',
 };
 
 const STATE = {
@@ -64,6 +65,11 @@ const STATE = {
   uploadedLegacyPssn: false,
   legacyPssnUploadResult: null,
   legacyPssnUploadError: null,
+
+  pullingLegacyApi: false,
+  pulledLegacyApi: false,
+  legacyApiPullResult: null,
+  legacyApiPullError: null,
 };
 
 function reducer(state = STATE, action) {
@@ -179,6 +185,13 @@ function reducer(state = STATE, action) {
       return { ...state, uploadingLegacyPssn: false, uploadedLegacyPssn: true, legacyPssnUploadResult: action.payload, legacyPssnUploadError: null };
     case `${ACTION_TYPE.UPLOAD_LEGACY_PSSN}_ERR`:
       return { ...state, uploadingLegacyPssn: false, legacyPssnUploadError: action.payload };
+
+    case `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_REQ`:
+      return { ...state, pullingLegacyApi: true, pulledLegacyApi: false, legacyApiPullError: null, legacyApiPullResult: null };
+    case `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_RESP`:
+      return { ...state, pullingLegacyApi: false, pulledLegacyApi: true, legacyApiPullResult: action.payload, legacyApiPullError: null };
+    case `${ACTION_TYPE.PULL_LEGACY_PSSN_API}_ERR`:
+      return { ...state, pullingLegacyApi: false, legacyApiPullError: action.payload };
 
     default:
       return state;
