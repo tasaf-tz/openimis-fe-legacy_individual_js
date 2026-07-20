@@ -1,11 +1,13 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, useSelector } from 'react-redux';
+import { useIntl } from 'react-intl';
 import { IconButton, Tooltip } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import {
   Searcher, useHistory, useModulesManager, decodeId,
+  formatMessage, formatMessageWithValues,
 } from '@openimis/fe-core';
 
 import { fetchLegacyIndividuals } from '../actions';
@@ -27,17 +29,18 @@ function LegacyIndividualsSearcher({
 }) {
   const history = useHistory();
   const modulesManager = useModulesManager();
+  const intl = useIntl();
   const rights = useSelector((store) => store.core.user.i_user.rights ?? []);
 
   const headers = () => [
-    'Name',
-    'Gender',
-    'Date of birth',
-    'NIN',
-    'Prem No.',
-    'Phone',
-    'Household code',
-    'Batch',
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.name'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.gender'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.dob'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.nin'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.premno'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.phone'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.householdCode'),
+    formatMessage(intl, 'legacy_individual', 'individualSearcher.header.batch'),
     '',
   ];
 
@@ -65,7 +68,7 @@ function LegacyIndividualsSearcher({
     (ind) => ind?.legacyCode?.split('-')?.[0] ?? '',
     (ind) => ind?.importBatch?.code || ind?.importBatch?.uuid?.slice(0, 8) || '',
     (ind) => (
-      <Tooltip title="View detail">
+      <Tooltip title={formatMessage(intl, 'legacy_individual', 'common.viewDetail')}>
         <IconButton onClick={() => openIndividual(ind)}>
           <VisibilityIcon />
         </IconButton>
@@ -87,7 +90,10 @@ function LegacyIndividualsSearcher({
       fetchedItems={fetchedLegacyIndividuals}
       fetchingItems={fetchingLegacyIndividuals}
       errorItems={errorLegacyIndividuals}
-      tableTitle={`Legacy individuals (${legacyIndividualsTotalCount})`}
+      tableTitle={formatMessageWithValues(
+        intl, 'legacy_individual', 'individualSearcher.tableTitle',
+        { count: legacyIndividualsTotalCount ?? 0 },
+      )}
       headers={headers}
       itemFormatters={itemFormatters}
       sorts={sorts}

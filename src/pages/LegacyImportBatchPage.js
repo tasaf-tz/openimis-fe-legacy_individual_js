@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Helmet } from '@openimis/fe-core';
+import { useIntl } from 'react-intl';
+import { Helmet, formatMessage, formatMessageWithValues } from '@openimis/fe-core';
 import { makeStyles } from '@material-ui/styles';
 import {
   Paper, Typography, Grid, Divider,
@@ -43,6 +44,7 @@ function LegacyImportBatchPage({
   fetchLegacyImportBatch,
 }) {
   const classes = useStyles();
+  const intl = useIntl();
   const uuid = match?.params?.batch_uuid;
 
   useEffect(() => {
@@ -62,7 +64,7 @@ function LegacyImportBatchPage({
     return (
       <div className={classes.page}>
         <LegacyArchiveBanner />
-        <Typography>Loading…</Typography>
+        <Typography>{formatMessage(intl, 'legacy_individual', 'common.loading')}</Typography>
       </div>
     );
   }
@@ -71,39 +73,39 @@ function LegacyImportBatchPage({
 
   return (
     <div className={classes.page}>
-      <Helmet title={`Legacy Import Batch — ${b.code || b.uuid}`} />
+      <Helmet title={formatMessageWithValues(intl, 'legacy_individual', 'batchPage.helmet', { code: b.code || b.uuid })} />
       <LegacyArchiveBanner />
 
       <Paper className={classes.paper}>
-        <Typography variant="h6">Batch {b.code || b.uuid}</Typography>
+        <Typography variant="h6">{formatMessageWithValues(intl, 'legacy_individual', 'batchPage.title', { code: b.code || b.uuid })}</Typography>
         <Divider className={classes.divider} />
         <Grid container spacing={2}>
-          <Field label="Source system" value={b.sourceSystem} />
-          <Field label="Status" value={b.status} />
-          <Field label="Created" value={b.dateCreated} />
-          <Field label="Started" value={b.startedAt} />
-          <Field label="Finished" value={b.finishedAt} />
-          <Field label="Household file" value={b.householdFileName} />
-          <Field label="Member file" value={b.memberFileName} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.sourceSystem')} value={b.sourceSystem} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.status')} value={b.status} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.created')} value={b.dateCreated} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.started')} value={b.startedAt} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.finished')} value={b.finishedAt} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.householdFile')} value={b.householdFileName} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.memberFile')} value={b.memberFileName} />
         </Grid>
       </Paper>
 
       <Paper className={classes.paper}>
-        <Typography variant="subtitle1">Counts</Typography>
+        <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'batchPage.countsSection')}</Typography>
         <Divider className={classes.divider} />
         <Grid container spacing={2}>
-          <Field label="Households (read)" value={b.totalHouseholds} />
-          <Field label="Households (saved)" value={b.successHouseholdCount} />
-          <Field label="Members (read)" value={b.totalMembers} />
-          <Field label="Members (saved)" value={b.successMemberCount} />
-          <Field label="Warnings" value={b.warningCount} />
-          <Field label="Errors" value={b.errorCount} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.households_read')} value={b.totalHouseholds} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.households_saved')} value={b.successHouseholdCount} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.members_read')} value={b.totalMembers} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.members_saved')} value={b.successMemberCount} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.warnings')} value={b.warningCount} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'batchPage.errors')} value={b.errorCount} />
         </Grid>
       </Paper>
 
       {(b.errorCount > 0 || b.warningCount > 0) && (
         <Paper className={classes.paper}>
-          <Typography variant="subtitle1">Errors and warnings</Typography>
+          <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'batchPage.errorsSection')}</Typography>
           <Divider className={classes.divider} />
           <div className={classes.json}>{JSON.stringify(b.error || {}, null, 2)}</div>
         </Paper>

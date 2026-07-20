@@ -1,10 +1,14 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, useSelector } from 'react-redux';
+import { useIntl } from 'react-intl';
 import { IconButton, Tooltip } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { Searcher, useHistory, useModulesManager, decodeId } from '@openimis/fe-core';
+import {
+  Searcher, useHistory, useModulesManager, decodeId,
+  formatMessage, formatMessageWithValues,
+} from '@openimis/fe-core';
 
 import { fetchLegacyImportBatches } from '../actions';
 import {
@@ -14,11 +18,11 @@ import {
 } from '../constants';
 
 const STATUS_STYLE = {
-  SUCCESS: { color: '#2e7d32', bg: '#e8f5e9', label: 'Success' },
-  COMPLETED_WITH_ERRORS: { color: '#ef6c00', bg: '#fff3e0', label: 'Completed with issues' },
-  IN_PROGRESS: { color: '#1565c0', bg: '#e3f2fd', label: 'In progress' },
-  PENDING: { color: '#616161', bg: '#f5f5f5', label: 'Pending' },
-  FAIL: { color: '#c62828', bg: '#ffebee', label: 'Failed' },
+  SUCCESS: { color: '#2e7d32', bg: '#e8f5e9' },
+  COMPLETED_WITH_ERRORS: { color: '#ef6c00', bg: '#fff3e0' },
+  IN_PROGRESS: { color: '#1565c0', bg: '#e3f2fd' },
+  PENDING: { color: '#616161', bg: '#f5f5f5' },
+  FAIL: { color: '#c62828', bg: '#ffebee' },
 };
 
 function parseJsonExt(jsonExt) {
@@ -41,14 +45,19 @@ function districtLabel(b) {
   return b?.uuid?.slice(0, 8) || '—';
 }
 
-function methodLabel(b) {
-  if (b?.sourceSystem === 'PSSN_API') return 'API';
-  if (b?.sourceSystem === 'PSSN') return 'CSV';
+function methodLabel(intl, b) {
+  if (b?.sourceSystem === 'PSSN_API') return formatMessage(intl, 'legacy_individual', 'batchSearcher.method.api');
+  if (b?.sourceSystem === 'PSSN') return formatMessage(intl, 'legacy_individual', 'batchSearcher.method.csv');
   return b?.sourceSystem || '—';
 }
 
 function StatusChip({ status }) {
-  const s = STATUS_STYLE[status] || { color: '#616161', bg: '#f5f5f5', label: status || '—' };
+  const intl = useIntl();
+  const s = STATUS_STYLE[status] || { color: '#616161', bg: '#f5f5f5' };
+  let label = status || '—';
+  if (STATUS_STYLE[status]) {
+    label = formatMessage(intl, 'legacy_individual', `batchSearcher.status.${status}`);
+  }
   return (
     <span
       style={{
@@ -62,18 +71,18 @@ function StatusChip({ status }) {
         whiteSpace: 'nowrap',
       }}
     >
-      {s.label}
+      {label}
     </span>
   );
 }
 
-function issuesLabel(b) {
+function issuesLabel(intl, b) {
   const w = b?.warningCount || 0;
   const e = b?.errorCount || 0;
   if (!w && !e) return '—';
   const parts = [];
-  if (w) parts.push(`${w} warning${w > 1 ? 's' : ''}`);
-  if (e) parts.push(`${e} error${e > 1 ? 's' : ''}`);
+  if (w) parts.push(formatMessageWithValues(intl, 'legacy_individual', 'batchSearcher.issues.warnings', { count: w }));
+  if (e) parts.push(formatMessageWithValues(intl, 'legacy_individual', 'batchSearcher.issues.errors', { count: e }));
   return parts.join(' · ');
 }
 
@@ -94,16 +103,17 @@ function LegacyImportBatchesSearcher({
 }) {
   const history = useHistory();
   const modulesManager = useModulesManager();
+  const intl = useIntl();
   const rights = useSelector((store) => store.core.user.i_user.rights ?? []);
 
   const headers = () => [
-    'District / PAA',
-    'Method',
-    'Status',
-    'Households',
-    'Members',
-    'Issues',
-    'Imported',
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.districtPaa'),
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.method'),
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.status'),
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.households'),
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.members'),
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.issues'),
+    formatMessage(intl, 'legacy_individual', 'batchSearcher.header.imported'),
     '',
   ];
 
@@ -124,14 +134,14 @@ function LegacyImportBatchesSearcher({
 
   const itemFormatters = () => [
     (b) => districtLabel(b),
-    (b) => methodLabel(b),
+    (b) => methodLabel(intl, b),
     (b) => <StatusChip status={b?.status} />,
     (b) => `${b?.successHouseholdCount ?? 0} / ${b?.totalHouseholds ?? 0}`,
     (b) => `${b?.successMemberCount ?? 0} / ${b?.totalMembers ?? 0}`,
-    (b) => issuesLabel(b),
+    (b) => issuesLabel(intl, b),
     (b) => formatDate(b?.dateCreated),
     (b) => (
-      <Tooltip title="View detail">
+      <Tooltip title={formatMessage(intl, 'legacy_individual', 'common.viewDetail')}>
         <IconButton onClick={() => openBatch(b)}>
           <VisibilityIcon />
         </IconButton>
@@ -148,7 +158,10 @@ function LegacyImportBatchesSearcher({
       fetchedItems={fetchedLegacyImportBatches}
       fetchingItems={fetchingLegacyImportBatches}
       errorItems={errorLegacyImportBatches}
-      tableTitle={`Legacy import batches (${legacyImportBatchesTotalCount})`}
+      tableTitle={formatMessageWithValues(
+        intl, 'legacy_individual', 'batchSearcher.tableTitle',
+        { count: legacyImportBatchesTotalCount ?? 0 },
+      )}
       headers={headers}
       itemFormatters={itemFormatters}
       sorts={sorts}

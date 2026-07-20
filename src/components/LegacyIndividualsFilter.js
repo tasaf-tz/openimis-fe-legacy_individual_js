@@ -1,5 +1,7 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { Grid, TextField } from '@material-ui/core';
+import { formatMessage } from '@openimis/fe-core';
 
 function setFilter(onChangeFilters, key, value, gqlFilter) {
   if (value === '' || value === undefined || value === null) {
@@ -10,13 +12,14 @@ function setFilter(onChangeFilters, key, value, gqlFilter) {
 }
 
 function LegacyIndividualsFilter({ filters, onChangeFilters }) {
+  const intl = useIntl();
   const get = (key) => filters?.[key]?.value ?? '';
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={3}>
         <TextField
-          label="First name"
+          label={formatMessage(intl, 'legacy_individual', 'individualFilter.firstName')}
           value={get('firstName')}
           fullWidth
           onChange={(e) => setFilter(
@@ -27,7 +30,7 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
       </Grid>
       <Grid item xs={3}>
         <TextField
-          label="Last name"
+          label={formatMessage(intl, 'legacy_individual', 'individualFilter.lastName')}
           value={get('lastName')}
           fullWidth
           onChange={(e) => setFilter(
@@ -38,7 +41,7 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
       </Grid>
       <Grid item xs={3}>
         <TextField
-          label="NIN"
+          label={formatMessage(intl, 'legacy_individual', 'individualFilter.nin')}
           value={get('nin')}
           fullWidth
           onChange={(e) => setFilter(
@@ -49,7 +52,7 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
       </Grid>
       <Grid item xs={3}>
         <TextField
-          label="Prem No."
+          label={formatMessage(intl, 'legacy_individual', 'individualFilter.premno')}
           value={get('premno')}
           fullWidth
           onChange={(e) => setFilter(
@@ -60,7 +63,7 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
       </Grid>
       <Grid item xs={3}>
         <TextField
-          label="Phone"
+          label={formatMessage(intl, 'legacy_individual', 'individualFilter.phone')}
           value={get('phoneNo')}
           fullWidth
           onChange={(e) => setFilter(
@@ -71,7 +74,7 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
       </Grid>
       <Grid item xs={3}>
         <TextField
-          label="Gender (M/F)"
+          label={formatMessage(intl, 'legacy_individual', 'individualFilter.gender')}
           value={get('gender')}
           fullWidth
           onChange={(e) => setFilter(

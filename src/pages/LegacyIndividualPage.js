@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Helmet } from '@openimis/fe-core';
+import { useIntl } from 'react-intl';
+import { Helmet, formatMessage, formatMessageWithValues } from '@openimis/fe-core';
 import { makeStyles } from '@material-ui/styles';
 import {
   Paper, Typography, Grid, Divider,
@@ -42,6 +43,7 @@ function LegacyIndividualPage({
   fetchLegacyIndividual,
 }) {
   const classes = useStyles();
+  const intl = useIntl();
   const uuid = match?.params?.legacy_individual_uuid;
 
   useEffect(() => {
@@ -52,7 +54,7 @@ function LegacyIndividualPage({
     return (
       <div className={classes.page}>
         <LegacyArchiveBanner />
-        <Typography>Loading…</Typography>
+        <Typography>{formatMessage(intl, 'legacy_individual', 'common.loading')}</Typography>
       </div>
     );
   }
@@ -62,63 +64,72 @@ function LegacyIndividualPage({
 
   return (
     <div className={classes.page}>
-      <Helmet title={`PSSN Individual — ${ind.firstName} ${ind.lastName}`} />
+      <Helmet title={formatMessageWithValues(
+        intl, 'legacy_individual', 'individualPage.helmet',
+        { name: `${ind.firstName} ${ind.lastName}` },
+      )}
+      />
       <LegacyArchiveBanner />
 
       <Paper className={classes.paper}>
         <Typography variant="h6">
           {[ind.firstName, ind.middleName, ind.lastName].filter(Boolean).join(' ')}
         </Typography>
-        <Typography variant="caption">Legacy code: {ind.legacyCode}</Typography>
+        <Typography variant="caption">
+          {formatMessageWithValues(intl, 'legacy_individual', 'individualPage.legacyCode', { code: ind.legacyCode })}
+        </Typography>
         <Divider className={classes.divider} />
         <Grid container spacing={2}>
-          <Field label="Gender" value={ind.gender} />
-          <Field label="Date of birth" value={ind.dob} />
-          <Field label="Disability" value={ind.disability == null ? null : (ind.disability ? 'Yes' : 'No')} />
-          <Field label="NIN" value={ind.nin} />
-          <Field label="Prem No." value={ind.premno} />
-          <Field label="Phone" value={ind.phoneNo} />
-          <Field label="Village" value={ind.location?.name} />
-          <Field label="Village code" value={ind.location?.code} />
-          <Field label="Facility" value={ind.facility?.name} />
-          <Field label="Import batch" value={ind.importBatch?.code || ind.importBatch?.uuid} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.gender')} value={ind.gender} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.dob')} value={ind.dob} />
+          <Field
+            label={formatMessage(intl, 'legacy_individual', 'individualPage.disability')}
+            value={ind.disability == null ? null : formatMessage(intl, 'legacy_individual', ind.disability ? 'individualPage.disabilityYes' : 'individualPage.disabilityNo')}
+          />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.nin')} value={ind.nin} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.premno')} value={ind.premno} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.phone')} value={ind.phoneNo} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.village')} value={ind.location?.name} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.villageCode')} value={ind.location?.code} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.facility')} value={ind.facility?.name} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.importBatch')} value={ind.importBatch?.code || ind.importBatch?.uuid} />
         </Grid>
       </Paper>
 
       {ext.nida && Object.keys(ext.nida).length > 0 && (
         <Paper className={classes.paper}>
-          <Typography variant="subtitle1">NIDA verification</Typography>
+          <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'individualPage.nidaSection')}</Typography>
           <Divider className={classes.divider} />
           <Grid container spacing={2}>
-            <Field label="First name" value={ext.nida.first_name} />
-            <Field label="Middle name" value={ext.nida.middle_name} />
-            <Field label="Last name" value={ext.nida.last_name} />
-            <Field label="DOB" value={ext.nida.dob} />
-            <Field label="Expiry" value={ext.nida.expiry_date} />
-            <Field label="Status" value={ext.nida.status} />
-            <Field label="No-NIDA reason" value={ext.nida.no_nida_reason} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.firstName')} value={ext.nida.first_name} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.middleName')} value={ext.nida.middle_name} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.lastName')} value={ext.nida.last_name} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.dob')} value={ext.nida.dob} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.expiry')} value={ext.nida.expiry_date} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.status')} value={ext.nida.status} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.noNidaReason')} value={ext.nida.no_nida_reason} />
           </Grid>
         </Paper>
       )}
 
       {ext.sis && Object.keys(ext.sis).length > 0 && (
         <Paper className={classes.paper}>
-          <Typography variant="subtitle1">School Information System</Typography>
+          <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'individualPage.sisSection')}</Typography>
           <Divider className={classes.divider} />
           <Grid container spacing={2}>
-            <Field label="School ID" value={ext.sis.school_id} />
-            <Field label="School code" value={ext.sis.school_code} />
-            <Field label="SIS ID" value={ext.sis.sis_id} />
-            <Field label="Grade" value={ext.sis.grade} />
-            <Field label="DOB" value={ext.sis.dob} />
-            <Field label="Sex" value={ext.sis.sex} />
-            <Field label="Update year" value={ext.sis.update_year} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.schoolId')} value={ext.sis.school_id} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.schoolCode')} value={ext.sis.school_code} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.sisId')} value={ext.sis.sis_id} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.grade')} value={ext.sis.grade} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.dob')} value={ext.sis.dob} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.sex')} value={ext.sis.sex} />
+            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.updateYear')} value={ext.sis.update_year} />
           </Grid>
         </Paper>
       )}
 
       <Paper className={classes.paper}>
-        <Typography variant="subtitle1">Raw payload (json_ext)</Typography>
+        <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'individualPage.rawPayload')}</Typography>
         <Divider className={classes.divider} />
         <div className={classes.json}>{JSON.stringify(ext, null, 2)}</div>
       </Paper>

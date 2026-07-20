@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Helmet } from '@openimis/fe-core';
+import { useIntl } from 'react-intl';
+import { Helmet, formatMessage, formatMessageWithValues } from '@openimis/fe-core';
 import { makeStyles } from '@material-ui/styles';
 import {
   Paper, Typography, Grid, Divider, Table, TableBody, TableCell, TableHead, TableRow,
@@ -80,6 +81,7 @@ function LegacyGroupPage({
   fetchLegacyGroupIndividuals,
 }) {
   const classes = useStyles();
+  const intl = useIntl();
   const uuid = match?.params?.legacy_group_uuid;
 
   useEffect(() => {
@@ -93,7 +95,7 @@ function LegacyGroupPage({
     return (
       <div className={classes.page}>
         <LegacyArchiveBanner />
-        <Typography>Loading…</Typography>
+        <Typography>{formatMessage(intl, 'legacy_individual', 'common.loading')}</Typography>
       </div>
     );
   }
@@ -104,42 +106,44 @@ function LegacyGroupPage({
 
   return (
     <div className={classes.page}>
-      <Helmet title={`Legacy Household — ${g.code}`} />
+      <Helmet title={formatMessageWithValues(intl, 'legacy_individual', 'groupPage.helmet', { code: g.code })} />
       <LegacyArchiveBanner />
 
       <Paper className={classes.paper}>
-        <Typography variant="h6">Household {g.code}</Typography>
+        <Typography variant="h6">{formatMessageWithValues(intl, 'legacy_individual', 'groupPage.title', { code: g.code })}</Typography>
         <Typography variant="caption">
-          Head: {[head.first_name, head.middle_name, head.last_name].filter(Boolean).join(' ')}
+          {formatMessageWithValues(intl, 'legacy_individual', 'groupPage.head', {
+            name: [head.first_name, head.middle_name, head.last_name].filter(Boolean).join(' '),
+          })}
         </Typography>
         <Divider className={classes.divider} />
         <Grid container spacing={2}>
-          <Field label="Village" value={g.location?.name} />
-          <Field label="Village code" value={g.location?.code} />
-          <Field label="HH size" value={ext.hh_size} />
-          <Field label="HH status" value={ext.hh_status} />
-          <Field label="PMT score" value={ext.pmt_score} />
-          <Field label="HH classification" value={ext.hh_classification} />
-          <Field label="Phone" value={ext.phone_no} />
-          <Field label="Wave" value={ext.wave_no} />
-          <Field label="Import batch" value={g.importBatch?.code || g.importBatch?.uuid} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.village')} value={g.location?.name} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.villageCode')} value={g.location?.code} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'groupPage.hhSize')} value={ext.hh_size} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'groupPage.hhStatus')} value={ext.hh_status} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.pmtScore')} value={ext.pmt_score} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.hhClassification')} value={ext.hh_classification} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'groupPage.phone')} value={ext.phone_no} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'groupPage.wave')} value={ext.wave_no} />
+          <Field label={formatMessage(intl, 'legacy_individual', 'common.importBatch')} value={g.importBatch?.code || g.importBatch?.uuid} />
         </Grid>
       </Paper>
 
       <Paper className={classes.paper}>
-        <Typography variant="subtitle1">Members</Typography>
+        <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'groupPage.membersSection')}</Typography>
         <Divider className={classes.divider} />
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Line</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Gender</TableCell>
-              <TableCell>DOB</TableCell>
-              <TableCell>NIN</TableCell>
-              <TableCell>Prem No.</TableCell>
-              <TableCell>Recipient</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.line')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.name')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.role')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.gender')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.dob')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.nin')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.premno')}</TableCell>
+              <TableCell>{formatMessage(intl, 'legacy_individual', 'groupPage.member.recipient')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -163,7 +167,7 @@ function LegacyGroupPage({
       </Paper>
 
       <Paper className={classes.paper}>
-        <Typography variant="subtitle1">Raw payload (json_ext)</Typography>
+        <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'groupPage.rawPayload')}</Typography>
         <Divider className={classes.divider} />
         <div className={classes.json}>{JSON.stringify(ext, null, 2)}</div>
       </Paper>

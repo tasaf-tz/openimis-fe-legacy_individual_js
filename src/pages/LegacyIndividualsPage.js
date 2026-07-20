@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Helmet } from '@openimis/fe-core';
+import { useIntl } from 'react-intl';
+import { Helmet, formatMessage } from '@openimis/fe-core';
 import { makeStyles } from '@material-ui/styles';
 
 import LegacyArchiveBanner from '../components/LegacyArchiveBanner';
@@ -11,11 +12,12 @@ const useStyles = makeStyles((theme) => ({ page: theme.page }));
 
 function LegacyIndividualsPage() {
   const classes = useStyles();
+  const intl = useIntl();
   const rights = useSelector((store) => store.core.user.i_user.rights ?? []);
 
   return (
     <div className={classes.page}>
-      <Helmet title="Legacy Individuals (PSSN Archive)" />
+      <Helmet title={formatMessage(intl, 'legacy_individual', 'pages.individuals.helmet')} />
       <LegacyArchiveBanner />
       {rights.includes(RIGHT_LEGACY_INDIVIDUAL_SEARCH) && <LegacyIndividualsSearcher />}
     </div>

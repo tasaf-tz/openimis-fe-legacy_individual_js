@@ -1,6 +1,8 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { makeStyles } from '@material-ui/styles';
 import { Paper } from '@material-ui/core';
+import { formatMessage } from '@openimis/fe-core';
 
 const useStyles = makeStyles((theme) => ({
   banner: {
@@ -15,9 +17,10 @@ const useStyles = makeStyles((theme) => ({
 
 function LegacyArchiveBanner({ message }) {
   const classes = useStyles();
+  const intl = useIntl();
   return (
     <Paper elevation={0} className={classes.banner}>
-      {message || 'PSSN historical archive — these records are not live TASAF MIS beneficiaries.'}
+      {message || formatMessage(intl, 'legacy_individual', 'banner.default')}
     </Paper>
   );
 }

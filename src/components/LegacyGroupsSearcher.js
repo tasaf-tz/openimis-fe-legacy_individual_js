@@ -1,10 +1,14 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect, useSelector } from 'react-redux';
+import { useIntl } from 'react-intl';
 import { IconButton, Tooltip } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { Searcher, useHistory, useModulesManager, decodeId } from '@openimis/fe-core';
+import {
+  Searcher, useHistory, useModulesManager, decodeId,
+  formatMessage, formatMessageWithValues,
+} from '@openimis/fe-core';
 
 import { fetchLegacyGroups } from '../actions';
 import {
@@ -67,15 +71,16 @@ function LegacyGroupsSearcher({
 }) {
   const history = useHistory();
   const modulesManager = useModulesManager();
+  const intl = useIntl();
   const rights = useSelector((store) => store.core.user.i_user.rights ?? []);
 
   const headers = () => [
-    'Code',
-    'Head of household',
-    'Village',
-    'PMT score',
-    'HH classification',
-    'Batch',
+    formatMessage(intl, 'legacy_individual', 'groupSearcher.header.code'),
+    formatMessage(intl, 'legacy_individual', 'groupSearcher.header.head'),
+    formatMessage(intl, 'legacy_individual', 'groupSearcher.header.village'),
+    formatMessage(intl, 'legacy_individual', 'groupSearcher.header.pmtScore'),
+    formatMessage(intl, 'legacy_individual', 'groupSearcher.header.hhClassification'),
+    formatMessage(intl, 'legacy_individual', 'groupSearcher.header.batch'),
     '',
   ];
 
@@ -96,7 +101,7 @@ function LegacyGroupsSearcher({
     (g) => _jsonExt(g)?.hh_classification ?? '',
     (g) => g?.importBatch?.code || g?.importBatch?.uuid?.slice(0, 8) || '',
     (g) => (
-      <Tooltip title="View detail">
+      <Tooltip title={formatMessage(intl, 'legacy_individual', 'common.viewDetail')}>
         <IconButton onClick={() => openGroup(g)}>
           <VisibilityIcon />
         </IconButton>
@@ -118,7 +123,10 @@ function LegacyGroupsSearcher({
       fetchedItems={fetchedLegacyGroups}
       fetchingItems={fetchingLegacyGroups}
       errorItems={errorLegacyGroups}
-      tableTitle={`Legacy households (${legacyGroupsTotalCount})`}
+      tableTitle={formatMessageWithValues(
+        intl, 'legacy_individual', 'groupSearcher.tableTitle',
+        { count: legacyGroupsTotalCount ?? 0 },
+      )}
       headers={headers}
       itemFormatters={itemFormatters}
       sorts={sorts}
