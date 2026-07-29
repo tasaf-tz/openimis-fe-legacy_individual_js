@@ -7,7 +7,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import {
   Searcher, useHistory, useModulesManager, decodeId,
-  formatMessage, formatMessageWithValues,
+  formatMessage, formatMessageWithValues, formatDateTimeFromISO,
 } from '@openimis/fe-core';
 
 import { fetchLegacyImportBatches } from '../actions';
@@ -86,10 +86,9 @@ function issuesLabel(intl, b) {
   return parts.join(' · ');
 }
 
-function formatDate(value) {
+function formatDate(modulesManager, intl, value) {
   if (!value) return '—';
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? value : d.toLocaleString();
+  return formatDateTimeFromISO(modulesManager, intl, value);
 }
 
 function LegacyImportBatchesSearcher({
@@ -139,7 +138,7 @@ function LegacyImportBatchesSearcher({
     (b) => `${b?.successHouseholdCount ?? 0} / ${b?.totalHouseholds ?? 0}`,
     (b) => `${b?.successMemberCount ?? 0} / ${b?.totalMembers ?? 0}`,
     (b) => issuesLabel(intl, b),
-    (b) => formatDate(b?.dateCreated),
+    (b) => formatDate(modulesManager, intl, b?.dateCreated),
     (b) => (
       <Tooltip title={formatMessage(intl, 'legacy_individual', 'common.viewDetail')}>
         <IconButton onClick={() => openBatch(b)}>
