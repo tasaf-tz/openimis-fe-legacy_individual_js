@@ -10,6 +10,7 @@ import {
   formatMessage, formatMessageWithValues,
 } from '@openimis/fe-core';
 
+import { cell } from '@openimis/fe-tasaf_common';
 import { fetchLegacyIndividuals } from '../actions';
 import {
   DEFAULT_PAGE_SIZE,
@@ -59,14 +60,14 @@ function LegacyIndividualsSearcher({
   );
 
   const itemFormatters = () => [
-    (ind) => [ind?.firstName, ind?.middleName, ind?.lastName].filter(Boolean).join(' '),
-    (ind) => ind?.gender ?? '',
-    (ind) => ind?.dob ?? '',
-    (ind) => ind?.nin ?? '',
-    (ind) => ind?.premno ?? '',
-    (ind) => ind?.phoneNo ?? '',
-    (ind) => ind?.legacyCode?.split('-')?.[0] ?? '',
-    (ind) => ind?.importBatch?.code || ind?.importBatch?.uuid?.slice(0, 8) || '',
+    (ind) => cell([ind?.firstName, ind?.middleName, ind?.lastName].filter(Boolean).join(' '), 220),
+    (ind) => cell(ind?.gender ?? '', 70, 'center'),
+    (ind) => cell(ind?.dob ?? '', 110),
+    (ind) => cell(ind?.nin ?? '', 150),
+    (ind) => cell(ind?.premno ?? '', 130),
+    (ind) => cell(ind?.phoneNo ?? '', 130),
+    (ind) => cell(ind?.legacyCode?.split('-')?.[0] ?? '', 130),
+    (ind) => cell(ind?.importBatch?.code || ind?.importBatch?.uuid?.slice(0, 8) || '', 150),
     (ind) => (
       <Tooltip title={formatMessage(intl, 'legacy_individual', 'common.viewDetail')}>
         <IconButton onClick={() => openIndividual(ind)}>
