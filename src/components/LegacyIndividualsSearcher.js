@@ -10,7 +10,7 @@ import {
   formatMessage, formatMessageWithValues,
 } from '@openimis/fe-core';
 
-import { cell } from '@openimis/fe-tasaf_common';
+import { cell } from '../utils/tableCell';
 import { fetchLegacyIndividuals } from '../actions';
 import {
   DEFAULT_PAGE_SIZE,
