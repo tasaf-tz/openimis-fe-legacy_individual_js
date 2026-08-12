@@ -11,6 +11,7 @@ import {
 } from '@openimis/fe-core';
 
 import { fetchLegacyImportBatches } from '../actions';
+import LegacyImportBatchesFilter from './LegacyImportBatchesFilter';
 import {
   DEFAULT_PAGE_SIZE,
   ROWS_PER_PAGE_OPTIONS,
@@ -148,9 +149,14 @@ function LegacyImportBatchesSearcher({
     ),
   ];
 
+  const filterPane = ({ filters, onChangeFilters }) => (
+    <LegacyImportBatchesFilter filters={filters} onChangeFilters={onChangeFilters} />
+  );
+
   return (
     <Searcher
       module="legacy_individual"
+      FilterPane={filterPane}
       fetch={(params) => fetchLegacyImportBatches(params)}
       items={legacyImportBatches}
       itemsPageInfo={legacyImportBatchesPageInfo}

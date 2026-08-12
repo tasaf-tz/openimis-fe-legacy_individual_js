@@ -95,6 +95,16 @@
     "groupFilter": {
       "code": "Household code (REGISTRATIONNO)"
     },
+    "batchFilter": {
+      "code": "Batch code",
+      "status": "Status",
+      "status.any": "Any status",
+      "status.PENDING": "Pending",
+      "status.IN_PROGRESS": "In progress",
+      "status.SUCCESS": "Success",
+      "status.COMPLETED_WITH_ERRORS": "Completed with errors",
+      "status.FAIL": "Failed"
+    },
     "individualPage": {
       "helmet": "PSSN Individual — {name}",
       "legacyCode": "Legacy code: {code}",
