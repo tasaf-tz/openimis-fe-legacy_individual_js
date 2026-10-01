@@ -128,7 +128,9 @@
       "sis.dob": "DOB",
       "sis.sex": "Sex",
       "sis.updateYear": "Update year",
-      "rawPayload": "Raw payload (json_ext)"
+      "rawPayload": "Raw payload (json_ext)",
+      "personalDetails": "Personal details",
+      "back": "Back"
     },
     "groupPage": {
       "helmet": "Legacy Household — {code}",
@@ -147,7 +149,9 @@
       "member.nin": "NIN",
       "member.premno": "Prem No.",
       "member.recipient": "Recipient",
-      "rawPayload": "Raw payload (json_ext)"
+      "rawPayload": "Raw payload (json_ext)",
+      "detailsSection": "Household details",
+      "membersTitle": "{count} members"
     },
     "batchPage": {
       "helmet": "Legacy Import Batch — {code}",
@@ -166,7 +170,8 @@
       "members_saved": "Members (saved)",
       "warnings": "Warnings",
       "errors": "Errors",
-      "errorsSection": "Errors and warnings"
+      "errorsSection": "Errors and warnings",
+      "detailsSection": "Batch details"
     },
     "dialog": {
       "title": "Import legacy PSSN data",
@@ -196,6 +201,52 @@
       "error.householdFilePrefix": "Household file: {msg}",
       "error.memberFilePrefix": "Member file: {msg}",
       "error.selectDistrict": "Select a district / PAA"
+    },
+    "import": {
+      "step1": "Step 1 of 2 · Choose source",
+      "step2": "Step 2 of 2 · Review and import",
+      "source": {
+        "csv": "CSV files",
+        "csvSub": "Household + member exports",
+        "api": "Legacy tasafMIS API",
+        "apiSub": "Pull one district directly"
+      },
+      "householdFile": "Household file",
+      "memberFile": "Member file",
+      "drop": {
+        "household": "Drop a household CSV here, or",
+        "member": "Drop a member CSV here, or",
+        "browse": "browse"
+      },
+      "file": {
+        "meta": "{rows} rows · {size} · required columns found",
+        "missing": "Missing required column(s): {columns}",
+        "notCsv": "Not a CSV file. Remove it and choose a .csv file.",
+        "remove": "Remove file"
+      },
+      "template": {
+        "household": "Household template",
+        "member": "Member template"
+      },
+      "batchCode": "Batch code",
+      "batchCodeHelp": "Generated automatically. Edit it if you track batches by your own reference.",
+      "hint": {
+        "household": "Add the household file to continue",
+        "member": "Add the member file to continue",
+        "fix": "Fix the highlighted file to continue",
+        "tooBig": "The two files together are over 64 MB",
+        "district": "Choose a district to continue"
+      },
+      "preview": {
+        "households": "Household rows",
+        "members": "Member rows",
+        "size": "Total size",
+        "columns": "{recognised} of {total} columns recognised",
+        "apiNote": "Dry run for {district}: nothing has been imported yet. Start the import to write these records to the legacy archive."
+      },
+      "previewBtn": "Preview import",
+      "back": "Back",
+      "cancel": "Cancel"
     }
   }
 }

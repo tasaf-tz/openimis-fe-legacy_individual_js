@@ -2,40 +2,47 @@ import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { useIntl } from 'react-intl';
-import { Helmet, formatMessage, formatMessageWithValues } from '@openimis/fe-core';
-import { makeStyles } from '@material-ui/styles';
 import {
-  Paper, Typography, Grid, Divider,
+  Helmet, ProgressOrError, TextInput, formatMessage, formatMessageWithValues, historyPush,
+  useHistory, useModulesManager,
+} from '@openimis/fe-core';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Avatar, Divider, Grid, IconButton, Paper, Tooltip, Typography,
 } from '@material-ui/core';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import LegacyArchiveBanner from '../components/LegacyArchiveBanner';
 import { fetchLegacyIndividual } from '../actions';
 
+const MODULE = 'legacy_individual';
+
 const useStyles = makeStyles((theme) => ({
   page: theme.page,
-  paper: { padding: 16, marginBottom: 16 },
-  label: { color: '#777', fontSize: '0.78rem', textTransform: 'uppercase' },
-  value: { fontSize: '0.95rem' },
-  divider: { margin: '12px 0' },
+  paper: theme.paper.paper,
+  header: {
+    ...theme.paper.header,
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+  },
+  headerTitle: { display: 'flex', alignItems: 'center', gap: theme.spacing(1), flexWrap: 'wrap' },
+  code: { color: theme.palette.text.secondary },
+  item: theme.paper.item,
+  tableTitle: theme.table.title,
+  bigAvatar: theme.bigAvatar,
   json: {
     fontFamily: 'monospace',
     fontSize: '0.8rem',
     background: '#f7f7f7',
-    padding: 8,
+    padding: theme.spacing(1),
+    margin: theme.spacing(2),
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
   },
 }));
-
-function Field({ label, value }) {
-  const classes = useStyles();
-  return (
-    <Grid item xs={12} sm={6} md={4}>
-      <div className={classes.label}>{label}</div>
-      <div className={classes.value}>{value || '—'}</div>
-    </Grid>
-  );
-}
 
 function LegacyIndividualPage({
   match,
@@ -44,95 +51,122 @@ function LegacyIndividualPage({
 }) {
   const classes = useStyles();
   const intl = useIntl();
+  const history = useHistory();
+  const modulesManager = useModulesManager();
   const uuid = match?.params?.legacy_individual_uuid;
+  const t = (id) => formatMessage(intl, MODULE, id);
 
   useEffect(() => {
     if (uuid) fetchLegacyIndividual(uuid);
   }, [uuid]);
 
-  if (!legacyIndividual) {
+  const field = (label, value) => (
+    <Grid item xs={12} sm={6} md={3} className={classes.item}>
+      <TextInput module={MODULE} label={label} value={value ?? ''} readOnly />
+    </Grid>
+  );
+
+  const section = (title, children) => (
+    <Paper className={classes.paper}>
+      <Typography className={classes.tableTitle}>{title}</Typography>
+      <Divider />
+      {children}
+    </Paper>
+  );
+
+  const ind = legacyIndividual;
+  if (!ind) {
     return (
       <div className={classes.page}>
         <LegacyArchiveBanner />
-        <Typography>{formatMessage(intl, 'legacy_individual', 'common.loading')}</Typography>
+        <ProgressOrError progress />
       </div>
     );
   }
 
-  const ind = legacyIndividual;
   const ext = ind.jsonExt || {};
+  const fullName = [ind.firstName, ind.middleName, ind.lastName].filter(Boolean).join(' ');
+  const back = () => (history.length > 1
+    ? history.goBack()
+    : historyPush(modulesManager, history, 'legacy_individual.route.individuals'));
 
   return (
     <div className={classes.page}>
-      <Helmet title={formatMessageWithValues(
-        intl, 'legacy_individual', 'individualPage.helmet',
-        { name: `${ind.firstName} ${ind.lastName}` },
-      )}
+      <Helmet title={formatMessageWithValues(intl, MODULE, 'individualPage.helmet', {
+        name: `${ind.firstName} ${ind.lastName}`,
+      })}
       />
       <LegacyArchiveBanner />
 
       <Paper className={classes.paper}>
-        <Typography variant="h6">
-          {[ind.firstName, ind.middleName, ind.lastName].filter(Boolean).join(' ')}
-        </Typography>
-        <Typography variant="caption">
-          {formatMessageWithValues(intl, 'legacy_individual', 'individualPage.legacyCode', { code: ind.legacyCode })}
-        </Typography>
-        <Divider className={classes.divider} />
-        <Grid container spacing={2}>
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.gender')} value={ind.gender} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.dob')} value={ind.dob} />
-          <Field
-            label={formatMessage(intl, 'legacy_individual', 'individualPage.disability')}
-            value={ind.disability == null ? null : formatMessage(intl, 'legacy_individual', ind.disability ? 'individualPage.disabilityYes' : 'individualPage.disabilityNo')}
-          />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.nin')} value={ind.nin} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.premno')} value={ind.premno} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.phone')} value={ind.phoneNo} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.village')} value={ind.location?.name} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.villageCode')} value={ind.location?.code} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.facility')} value={ind.facility?.name} />
-          <Field label={formatMessage(intl, 'legacy_individual', 'common.importBatch')} value={ind.importBatch?.code || ind.importBatch?.uuid} />
+        <div className={classes.header}>
+          <div className={classes.headerTitle}>
+            <Tooltip title={t('individualPage.back')}>
+              <IconButton onClick={back}><ChevronLeftIcon /></IconButton>
+            </Tooltip>
+            <Typography variant="h6">{fullName}</Typography>
+            {!!ind.legacyCode && (
+              <Typography variant="body2" className={classes.code}>
+                {formatMessageWithValues(intl, MODULE, 'individualPage.legacyCode', { code: ind.legacyCode })}
+              </Typography>
+            )}
+          </div>
+        </div>
+      </Paper>
+
+      {section(t('individualPage.personalDetails'), (
+        <Grid container className={classes.item}>
+          <Grid item xs={12} sm={3} md={2} className={classes.item}>
+            <Avatar className={classes.bigAvatar} />
+          </Grid>
+          <Grid item xs={12} sm={9} md={10}>
+            <Grid container>
+              {field(t('common.gender'), ind.gender)}
+              {field(t('common.dob'), ind.dob)}
+              {field(
+                t('individualPage.disability'),
+                ind.disability == null ? null
+                  : t(ind.disability ? 'individualPage.disabilityYes' : 'individualPage.disabilityNo'),
+              )}
+              {field(t('common.nin'), ind.nin)}
+              {field(t('common.premno'), ind.premno)}
+              {field(t('common.phone'), ind.phoneNo)}
+              {field(t('common.village'), ind.location?.name)}
+              {field(t('common.villageCode'), ind.location?.code)}
+              {field(t('individualPage.facility'), ind.facility?.name)}
+              {field(t('common.importBatch'), ind.importBatch?.code || ind.importBatch?.uuid)}
+            </Grid>
+          </Grid>
         </Grid>
-      </Paper>
+      ))}
 
-      {ext.nida && Object.keys(ext.nida).length > 0 && (
-        <Paper className={classes.paper}>
-          <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'individualPage.nidaSection')}</Typography>
-          <Divider className={classes.divider} />
-          <Grid container spacing={2}>
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.firstName')} value={ext.nida.first_name} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.middleName')} value={ext.nida.middle_name} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.lastName')} value={ext.nida.last_name} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.dob')} value={ext.nida.dob} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.expiry')} value={ext.nida.expiry_date} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.status')} value={ext.nida.status} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.nida.noNidaReason')} value={ext.nida.no_nida_reason} />
-          </Grid>
-        </Paper>
-      )}
+      {ext.nida && Object.keys(ext.nida).length > 0 && section(t('individualPage.nidaSection'), (
+        <Grid container className={classes.item}>
+          {field(t('individualPage.nida.firstName'), ext.nida.first_name)}
+          {field(t('individualPage.nida.middleName'), ext.nida.middle_name)}
+          {field(t('individualPage.nida.lastName'), ext.nida.last_name)}
+          {field(t('individualPage.nida.dob'), ext.nida.dob)}
+          {field(t('individualPage.nida.expiry'), ext.nida.expiry_date)}
+          {field(t('individualPage.nida.status'), ext.nida.status)}
+          {field(t('individualPage.nida.noNidaReason'), ext.nida.no_nida_reason)}
+        </Grid>
+      ))}
 
-      {ext.sis && Object.keys(ext.sis).length > 0 && (
-        <Paper className={classes.paper}>
-          <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'individualPage.sisSection')}</Typography>
-          <Divider className={classes.divider} />
-          <Grid container spacing={2}>
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.schoolId')} value={ext.sis.school_id} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.schoolCode')} value={ext.sis.school_code} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.sisId')} value={ext.sis.sis_id} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.grade')} value={ext.sis.grade} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.dob')} value={ext.sis.dob} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.sex')} value={ext.sis.sex} />
-            <Field label={formatMessage(intl, 'legacy_individual', 'individualPage.sis.updateYear')} value={ext.sis.update_year} />
-          </Grid>
-        </Paper>
-      )}
+      {ext.sis && Object.keys(ext.sis).length > 0 && section(t('individualPage.sisSection'), (
+        <Grid container className={classes.item}>
+          {field(t('individualPage.sis.schoolId'), ext.sis.school_id)}
+          {field(t('individualPage.sis.schoolCode'), ext.sis.school_code)}
+          {field(t('individualPage.sis.sisId'), ext.sis.sis_id)}
+          {field(t('individualPage.sis.grade'), ext.sis.grade)}
+          {field(t('individualPage.sis.dob'), ext.sis.dob)}
+          {field(t('individualPage.sis.sex'), ext.sis.sex)}
+          {field(t('individualPage.sis.updateYear'), ext.sis.update_year)}
+        </Grid>
+      ))}
 
-      <Paper className={classes.paper}>
-        <Typography variant="subtitle1">{formatMessage(intl, 'legacy_individual', 'individualPage.rawPayload')}</Typography>
-        <Divider className={classes.divider} />
+      {section(t('individualPage.rawPayload'), (
         <div className={classes.json}>{JSON.stringify(ext, null, 2)}</div>
-      </Paper>
+      ))}
     </div>
   );
 }
