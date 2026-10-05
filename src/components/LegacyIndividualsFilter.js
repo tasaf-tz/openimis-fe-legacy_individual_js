@@ -15,32 +15,6 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
   const intl = useIntl();
   const get = (key) => filters?.[key]?.value ?? '';
 
-  const handleLocationFilterChange = (newFilters) => {
-    const location = (newFilters || []).find(
-      (f) => ['parentLocation', 'location', 'districtLocation', 'regionLocation'].includes(f?.id),
-    );
-    const level = (newFilters || []).find((f) => f?.id === 'parentLocationLevel');
-    const value = location?.value;
-    const uuid = value?.uuid || value?.id || value || null;
-
-    if (!uuid) {
-      onChangeFilters([
-        { id: 'parentLocation', value: null },
-        { id: 'parentLocationLevel', value: null },
-      ]);
-      return;
-    }
-    onChangeFilters([
-      { id: 'parentLocation', value, filter: `parentLocation: "${uuid}"` },
-      {
-        id: 'parentLocationLevel',
-        value: level?.value ?? 0,
-        filter: `parentLocationLevel: ${level?.value ?? 0}`,
-      },
-    ]);
-  };
-
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={3}>
@@ -113,7 +87,7 @@ function LegacyIndividualsFilter({ filters, onChangeFilters }) {
         <PublishedComponent
           pubRef="location.DetailedLocationFilter"
           filters={filters}
-          onChangeFilters={handleLocationFilterChange}
+          onChangeFilters={onChangeFilters}
           anchor="parentLocation"
         />
       </Grid>
