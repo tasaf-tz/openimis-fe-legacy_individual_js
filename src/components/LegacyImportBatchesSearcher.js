@@ -9,6 +9,7 @@ import {
   Searcher, useHistory, useModulesManager, decodeId,
   formatMessage, formatMessageWithValues, formatDateTimeFromISO,
 } from '@openimis/fe-core';
+import { toDisplayTime } from '@openimis/fe-tasaf_common';
 
 import { fetchLegacyImportBatches } from '../actions';
 import LegacyImportBatchesFilter from './LegacyImportBatchesFilter';
@@ -89,7 +90,7 @@ function issuesLabel(intl, b) {
 
 function formatDate(modulesManager, intl, value) {
   if (!value) return '—';
-  return formatDateTimeFromISO(modulesManager, intl, value);
+  return formatDateTimeFromISO(modulesManager, intl, toDisplayTime(value));
 }
 
 function LegacyImportBatchesSearcher({
