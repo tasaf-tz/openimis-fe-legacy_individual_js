@@ -50,6 +50,7 @@ function districtLabel(b) {
 function methodLabel(intl, b) {
   if (b?.sourceSystem === 'PSSN_API') return formatMessage(intl, 'legacy_individual', 'batchSearcher.method.api');
   if (b?.sourceSystem === 'PSSN') return formatMessage(intl, 'legacy_individual', 'batchSearcher.method.csv');
+  if (b?.sourceSystem === 'RM4') return formatMessage(intl, 'legacy_individual', 'batchSearcher.method.rm4');
   return b?.sourceSystem || '—';
 }
 

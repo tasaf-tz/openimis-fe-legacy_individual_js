@@ -141,6 +141,47 @@ export function fetchLegacyImportBatch(uuid) {
   return graphql(payload, ACTION_TYPE.GET_LEGACY_IMPORT_BATCH);
 }
 
+const RM4_GROUP_PROJECTION = () => [
+  'id', 'uuid', 'code', 'jsonExt', 'dateCreated',
+  'location { id uuid name code type parent { name code parent { name code } } }',
+  'archiveBatch { id uuid code }',
+];
+
+const RM4_INDIVIDUAL_PROJECTION = () => [
+  'id', 'uuid', 'firstName', 'lastName', 'dob', 'jsonExt', 'dateCreated',
+  'location { id uuid name code type }',
+  'memberships { edges { node { role group { id uuid code } } } }',
+];
+
+const RM4_GROUP_INDIVIDUAL_PROJECTION = () => [
+  'id', 'uuid', 'role', 'recipientType', 'isActive',
+  'individual { id uuid firstName lastName dob jsonExt }',
+];
+
+export function fetchRm4Groups(params) {
+  return graphql(formatPageQueryWithCount('rm4Groups', params, RM4_GROUP_PROJECTION()), ACTION_TYPE.SEARCH_RM4_GROUPS);
+}
+
+export function fetchRm4Group(uuid) {
+  const payload = formatPageQuery('rm4Groups', [`id: "${formatGQLString(uuid)}"`], RM4_GROUP_PROJECTION());
+  return graphql(payload, ACTION_TYPE.GET_RM4_GROUP);
+}
+
+export function fetchRm4Individuals(params) {
+  const payload = formatPageQueryWithCount('rm4Individuals', params, RM4_INDIVIDUAL_PROJECTION());
+  return graphql(payload, ACTION_TYPE.SEARCH_RM4_INDIVIDUALS);
+}
+
+export function fetchRm4Individual(uuid) {
+  const payload = formatPageQuery('rm4Individuals', [`id: "${formatGQLString(uuid)}"`], RM4_INDIVIDUAL_PROJECTION());
+  return graphql(payload, ACTION_TYPE.GET_RM4_INDIVIDUAL);
+}
+
+export function fetchRm4GroupIndividuals(params) {
+  const payload = formatPageQueryWithCount('rm4GroupIndividuals', params, RM4_GROUP_INDIVIDUAL_PROJECTION());
+  return graphql(payload, ACTION_TYPE.SEARCH_RM4_GROUP_INDIVIDUALS);
+}
+
 export function pullLegacyPssnApi({
   districtCode, regionCode, paaName, dryRun,
 }) {

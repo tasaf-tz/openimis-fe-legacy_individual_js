@@ -15,7 +15,42 @@ export const ACTION_TYPE = {
   GET_LEGACY_IMPORT_BATCH: 'LEGACY_INDIVIDUAL_GET_IMPORT_BATCH',
   UPLOAD_LEGACY_PSSN: 'LEGACY_INDIVIDUAL_UPLOAD_PSSN',
   PULL_LEGACY_PSSN_API: 'LEGACY_INDIVIDUAL_PULL_PSSN_API',
+  SEARCH_RM4_GROUPS: 'LEGACY_INDIVIDUAL_SEARCH_RM4_GROUPS',
+  GET_RM4_GROUP: 'LEGACY_INDIVIDUAL_GET_RM4_GROUP',
+  SEARCH_RM4_INDIVIDUALS: 'LEGACY_INDIVIDUAL_SEARCH_RM4_INDIVIDUALS',
+  GET_RM4_INDIVIDUAL: 'LEGACY_INDIVIDUAL_GET_RM4_INDIVIDUAL',
+  SEARCH_RM4_GROUP_INDIVIDUALS: 'LEGACY_INDIVIDUAL_SEARCH_RM4_GROUP_INDIVIDUALS',
 };
+
+const RM4_LISTS = {
+  [ACTION_TYPE.SEARCH_RM4_GROUPS]: ['rm4Groups', 'rm4Groups'],
+  [ACTION_TYPE.SEARCH_RM4_INDIVIDUALS]: ['rm4Individuals', 'rm4Individuals'],
+  [ACTION_TYPE.SEARCH_RM4_GROUP_INDIVIDUALS]: ['rm4GroupIndividuals', 'rm4GroupIndividuals'],
+};
+const RM4_RECORDS = {
+  [ACTION_TYPE.GET_RM4_GROUP]: ['rm4Group', 'rm4Groups'],
+  [ACTION_TYPE.GET_RM4_INDIVIDUAL]: ['rm4Individual', 'rm4Individuals'],
+};
+const upper = (key) => key.charAt(0).toUpperCase() + key.slice(1);
+
+function rm4Reducer(state, action) {
+  const [type, phase] = [action.type.replace(/_(REQ|RESP|ERR)$/, ''), action.type.match(/_(REQ|RESP|ERR)$/)?.[1]];
+  const list = RM4_LISTS[type];
+  const record = RM4_RECORDS[type];
+  if (!phase || (!list && !record)) return null;
+  const [key, query] = list || record;
+  const K = upper(key);
+  if (phase === 'REQ') return { ...state, [`fetching${K}`]: true, [`fetched${K}`]: false, [`error${K}`]: null };
+  if (phase === 'ERR') return { ...state, [`fetching${K}`]: false, [`error${K}`]: formatServerError(action.payload) };
+  const data = action.payload.data?.[query];
+  const done = {
+    ...state, [`fetching${K}`]: false, [`fetched${K}`]: true, [`error${K}`]: formatGraphQLError(action.payload),
+  };
+  if (record) return { ...done, [key]: parseData(data)?.[0] ?? null };
+  return {
+    ...done, [key]: parseData(data), [`${key}PageInfo`]: pageInfo(data), [`${key}TotalCount`]: data?.totalCount ?? 0,
+  };
+}
 
 const STATE = {
   fetchingLegacyIndividuals: false,
@@ -70,9 +105,21 @@ const STATE = {
   pulledLegacyApi: false,
   legacyApiPullResult: null,
   legacyApiPullError: null,
+
+  rm4Groups: [],
+  rm4GroupsPageInfo: {},
+  rm4GroupsTotalCount: 0,
+  rm4Group: null,
+  rm4Individuals: [],
+  rm4IndividualsPageInfo: {},
+  rm4IndividualsTotalCount: 0,
+  rm4Individual: null,
+  rm4GroupIndividuals: [],
 };
 
 function reducer(state = STATE, action) {
+  const rm4 = rm4Reducer(state, action);
+  if (rm4) return rm4;
   switch (action.type) {
     case `${ACTION_TYPE.SEARCH_LEGACY_INDIVIDUALS}_REQ`:
       return { ...state, fetchingLegacyIndividuals: true, fetchedLegacyIndividuals: false, errorLegacyIndividuals: null };

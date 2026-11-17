@@ -1,9 +1,11 @@
 {
   "legacy_individual": {
     "menu": {
-      "individuals": "PSSN II Individuals",
-      "groups": "PSSN II Households",
-      "imports": "Legacy Imports"
+      "individuals": "Legacy Members",
+      "groups": "Legacy Households",
+      "imports": "Legacy Imports",
+      "rm4Individuals": "RM4 Members",
+      "rm4Groups": "RM4 Households"
     },
     "page": {
       "individuals.title": "PSSN II Individuals ",
@@ -82,7 +84,8 @@
       "method.api": "API",
       "method.csv": "CSV",
       "issues.warnings": "{count, plural, one {# warning} other {# warnings}}",
-      "issues.errors": "{count, plural, one {# error} other {# errors}}"
+      "issues.errors": "{count, plural, one {# error} other {# errors}}",
+      "method.rm4": "RM4 archive copy"
     },
     "individualFilter": {
       "firstName": "First name",
@@ -247,6 +250,60 @@
       "previewBtn": "Preview import",
       "back": "Back",
       "cancel": "Cancel"
+    },
+    "rm4": {
+      "banner": "RM4 archive — read-only copy of the RM4 register, kept for reference. These are not live TASAF MIS households.",
+      "groups": {
+        "helmet": "RM4 Households (archive)",
+        "tableTitle": "RM4 households ({count})"
+      },
+      "individuals": {
+        "helmet": "RM4 Members (archive)",
+        "tableTitle": "RM4 members ({count})"
+      },
+      "common": {
+        "village": "Village",
+        "district": "District"
+      },
+      "filter": {
+        "code": "Household code (starts with)",
+        "interviewKey": "Interview key",
+        "pmtClass": "PMT class (POOR / NON_POOR)",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "externalId": "Member code (starts with)"
+      },
+      "group": {
+        "code": "Household code",
+        "head": "Head",
+        "interviewKey": "Interview key",
+        "pmtScore": "PMT score",
+        "pmtClass": "PMT class",
+        "wave": "Wave",
+        "consent": "Consent",
+        "archiveBatch": "Archive batch",
+        "helmet": "RM4 Household — {code}",
+        "title": "RM4 Household {code}",
+        "members": "Members ({count})"
+      },
+      "individual": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "dob": "Date of birth",
+        "role": "Role",
+        "household": "Household",
+        "recipient": "Recipient",
+        "externalId": "Member code",
+        "helmet": "RM4 Member — {name}"
+      },
+      "answers": {
+        "title": "Answers",
+        "show": "Show answers ({count})",
+        "hide": "Hide answers",
+        "search": "Find a question or answer",
+        "field": "Question",
+        "value": "Answer"
+      }
     }
   }
 }
