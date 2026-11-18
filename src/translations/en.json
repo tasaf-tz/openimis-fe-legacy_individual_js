@@ -1,15 +1,15 @@
 {
   "legacy_individual": {
     "menu": {
-      "individuals": "Legacy Members",
-      "groups": "Legacy Households",
-      "imports": "Legacy Imports",
+      "individuals": "PSSN I & II Members",
+      "groups": "PSSN I & II Households",
+      "imports": "Import",
       "rm4Individuals": "RM4 Members",
       "rm4Groups": "RM4 Households"
     },
     "page": {
-      "individuals.title": "PSSN II Individuals ",
-      "groups.title": "Legacy II Households",
+      "individuals.title": "PSSN I & II Members",
+      "groups.title": "PSSN I & II Households",
       "imports.title": "Legacy Imports (PSSN II)"
     },
     "banner": {
@@ -42,13 +42,13 @@
       "hhClassification": "HH classification"
     },
     "pages": {
-      "individuals.helmet": "Legacy Individuals (PSSN Archive)",
-      "groups.helmet": "Legacy Households (PSSN Archive)",
+      "individuals.helmet": "PSSN I & II Members (PSSN Archive)",
+      "groups.helmet": "PSSN I & II Households (PSSN Archive)",
       "imports.helmet": "Legacy Imports (PSSN)",
       "imports.fabTooltip": "Import legacy PSSN data (CSV upload or API)"
     },
     "individualSearcher": {
-      "tableTitle": "Legacy individuals ({count})",
+      "tableTitle": "PSSN I & II members ({count})",
       "header.name": "Name",
       "header.gender": "Gender",
       "header.dob": "Date of birth",
@@ -59,7 +59,7 @@
       "header.batch": "Batch"
     },
     "groupSearcher": {
-      "tableTitle": "Legacy households ({count})",
+      "tableTitle": "PSSN I & II households ({count})",
       "header.code": "Code",
       "header.head": "Head of household",
       "header.village": "Village",
@@ -109,7 +109,7 @@
       "status.FAIL": "Failed"
     },
     "individualPage": {
-      "helmet": "PSSN Individual — {name}",
+      "helmet": "PSSN I & II Member — {name}",
       "legacyCode": "Legacy code: {code}",
       "disability": "Disability",
       "disabilityYes": "Yes",
@@ -136,7 +136,7 @@
       "back": "Back"
     },
     "groupPage": {
-      "helmet": "Legacy Household — {code}",
+      "helmet": "PSSN I & II Household — {code}",
       "title": "Household {code}",
       "head": "Head: {name}",
       "hhSize": "HH size",
