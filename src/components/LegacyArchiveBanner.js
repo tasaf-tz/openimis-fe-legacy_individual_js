@@ -1,16 +1,18 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { makeStyles } from '@material-ui/styles';
+import { fade } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 import { formatMessage } from '@openimis/fe-core';
 
 const useStyles = makeStyles((theme) => ({
   banner: {
-    backgroundColor: '#f5f0e6',
-    color: '#5a4a32',
+    backgroundColor: fade(theme.palette.warning.main, 0.08),
+    color: theme.palette.text.primary,
     padding: '8px 16px',
     margin: '0 0 12px 0',
-    borderLeft: '4px solid #b89b6a',
+    border: `1px solid ${fade(theme.palette.warning.main, 0.35)}`,
+    borderRadius: 4,
     fontSize: '0.9rem',
   },
 }));
